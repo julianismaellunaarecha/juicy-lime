@@ -29,12 +29,15 @@ repositories {
 dependencies {
     annotationProcessor 'com.github.therapi:therapi-runtime-javadoc-scribe:0.13.0'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
-    implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.8'
-    implementation 'org.springdoc:springdoc-openapi-javadoc:1.6.8'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-javadoc:1.6.9'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
