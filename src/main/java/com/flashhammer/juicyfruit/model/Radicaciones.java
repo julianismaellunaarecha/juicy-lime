@@ -3,6 +3,7 @@ package com.flashhammer.juicyfruit.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Radicaciones {
+
     String secretariaPrimeraInstancia;
     String organismoSegundaInstancia;
     String secretariaSegundaInstancia;

@@ -1,9 +1,11 @@
 package com.flashhammer.juicyfruit.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Id;
 
 public class UltimaAccionNew {
 
+    @Id
     int expId;
     String descripcion;
     long fecha;

@@ -1,6 +1,7 @@
 package com.flashhammer.juicyfruit.service;
 
 import com.flashhammer.juicyfruit.model.Encabezado;
+import com.flashhammer.juicyfruit.model.Expediente;
 import com.flashhammer.juicyfruit.model.ExpedientesSolo;
 import com.flashhammer.juicyfruit.model.ExpedientesSoloNew;
 import com.flashhammer.juicyfruit.model.Ficha;
@@ -8,6 +9,7 @@ import com.flashhammer.juicyfruit.model.Parte;
 import com.flashhammer.juicyfruit.model.UltimaAccion;
 import com.flashhammer.juicyfruit.model.UltimaAccionNew;
 import com.flashhammer.juicyfruit.repository.EncabezadoMongoRepository;
+import com.flashhammer.juicyfruit.repository.ExpedienteCompletoMongoRepository;
 import com.flashhammer.juicyfruit.repository.ExpedientesSoloMongoRepository;
 import com.flashhammer.juicyfruit.repository.ExpedientesSoloNewMongoRepository;
 import com.flashhammer.juicyfruit.repository.FichaMongoRepository;
@@ -15,6 +17,7 @@ import com.flashhammer.juicyfruit.repository.ParteMongoRepository;
 import com.flashhammer.juicyfruit.repository.UltimaAccionMongoRepository;
 import com.flashhammer.juicyfruit.repository.UltimaAccionNewMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,6 +47,9 @@ public class MongoService {
 
     @Autowired
     ParteMongoRepository parteMongoRepository;
+
+    @Autowired
+    ExpedienteCompletoMongoRepository expedienteCompletoMongoRepository;
 
     // Expedientes
     public Mono<ExpedientesSolo> getExpedientesSoloById(Integer id) {
@@ -93,6 +99,10 @@ public class MongoService {
 
     public Mono<Encabezado> putEncabezadoByValue(Encabezado encabezado) {
         return encabezadoMongoRepository.insert(encabezado);
+    }
+
+    public Mono<Encabezado> updateEncabezadoByValue(Encabezado encabezado) {
+        return encabezadoMongoRepository.save(encabezado);
     }
 
     // UltimaAccion
@@ -182,4 +192,27 @@ public class MongoService {
     public Mono<Parte> updateParteByValue(Parte parte) {
         return parteMongoRepository.save(parte);
     }
+
+    // Expediente Completo
+
+    public Flux<Expediente> getExpedienteCompletoAll() {
+        return expedienteCompletoMongoRepository.findAll();
+    }
+
+    public Mono<Expediente> getExpedienteCompletoById(Integer id) {
+        return expedienteCompletoMongoRepository.findById(id);
+    }
+
+    public Mono<Expediente> updateExpedienteCompletoByValue(Expediente expedienteCompleto) {
+        return expedienteCompletoMongoRepository.save(expedienteCompleto);
+    }
+
+    public Mono<Expediente> putExpedienteCompletoByValue(Expediente expedienteCompleto) {
+        return expedienteCompletoMongoRepository.insert(expedienteCompleto);
+    }
+
+    public Mono<Boolean> getExpedienteCompletoPresente(Integer id) {
+        return expedienteCompletoMongoRepository.existsById(id);
+    }
+
 }

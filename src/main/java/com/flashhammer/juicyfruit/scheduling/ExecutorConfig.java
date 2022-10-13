@@ -6,6 +6,7 @@ import com.flashhammer.juicyfruit.controller.EjeCABAController;
 import com.flashhammer.juicyfruit.controller.MongoController;
 import com.flashhammer.juicyfruit.model.AccesosExpediente;
 import com.flashhammer.juicyfruit.model.Encabezado;
+import com.flashhammer.juicyfruit.model.Expediente;
 import com.flashhammer.juicyfruit.model.ExpedientesSolo;
 import com.flashhammer.juicyfruit.model.ExpedientesSoloNew;
 import com.flashhammer.juicyfruit.model.Ficha;
@@ -156,36 +157,47 @@ public class ExecutorConfig implements AsyncConfigurer {
         System.out.printf("Bajas de EJE: " + contadorBajas + ". Altas de EJE: " + contadorAltas + "%n");
     }
 
-    private void impactarEncabezados() {
-        System.out.println("impactarEncabezados()");
-        Flux<ExpedientesSolo> expedientes = mongoController.getExpedientesSolo();
-        expedientes.subscribe(expediente -> {
-            Encabezado encabezado = ejeCABAController.traerEncabezado(expediente.getExpId());
-            encabezado.setExpId(expediente.getExpId());
-            Mono<Boolean> encabezadoCheck = mongoController.getEncabezadoPresente(expediente.getExpId());
+    private void impactarEncabezados(Integer id) {
+            Encabezado encabezado = ejeCABAController.traerEncabezado(id);
+            encabezado.setExpId(id);
+            Mono<Boolean> encabezadoCheck = mongoController.getEncabezadoPresente(id);
             encabezadoCheck.subscribe(encabezadoChecked -> {
                 if (!encabezadoChecked) {
                     Mono<Encabezado> putEncabezado = mongoController.putEncabezadoByValue(encabezado);
                     putEncabezado.subscribe();
                 }
             });
-        });
+            Mono<Encabezado> encabezadoMongo = mongoController.getEncabezadoById(id);
+        encabezadoMongo.subscribe(
+                encabezadoMongoSubs -> {
+                    if(checkEncabezado(encabezado,encabezadoMongoSubs)){
+                        mongoController.updateEncabezadoByValue(encabezado);
+                    }
+                }
+        );
     }
 
-    private void impactarUltimasAcciones() {
-        System.out.println("impactarUltimasAcciones()");
-        Flux<ExpedientesSolo> expedientes = mongoController.getExpedientesSolo();
-        expedientes.subscribe(expediente -> {
-            AccesosExpediente accesosExpediente = ejeCABAController.accesosExpediente(expediente.getExpId());
+    private boolean checkEncabezado(Encabezado encabezado, Encabezado encabezadoMongoSubs) {
+        boolean anio = encabezadoMongoSubs.getAnio() != encabezado.getAnio();
+        boolean caratula = !encabezadoMongoSubs.getCaratula().equalsIgnoreCase(encabezado.getCaratula());
+        boolean cuij = !encabezadoMongoSubs.getCuij().equalsIgnoreCase(encabezado.getCuij());
+        boolean esPrivado = encabezadoMongoSubs.getEsPrivado() != encabezado.getEsPrivado();
+
+
+        return anio && caratula && cuij && esPrivado;
+    }
+
+    private void impactarUltimasAcciones(Integer id) {
+            AccesosExpediente accesosExpediente = ejeCABAController.accesosExpediente(id);
             if(accesosExpediente.getTieneAccesoEstricto()
                     || accesosExpediente.getTieneAccesoLogueado()
                     || accesosExpediente.getTieneAccesoPublico()
                     || accesosExpediente.getTieneAccesoRadicado()
                     || accesosExpediente.getTieneAccesoPorAutorizacion()
             ) {
-                UltimaAccion ultimaAccion = ejeCABAController.traerUltimaAccion(expediente.getExpId());
-                ultimaAccion.setExpId(expediente.getExpId());
-                Mono<Boolean> ultimaAccionPresenteChecked = mongoController.getUltimaAccionPresente(expediente.getExpId());
+                UltimaAccion ultimaAccion = ejeCABAController.traerUltimaAccion(id);
+                ultimaAccion.setExpId(id);
+                Mono<Boolean> ultimaAccionPresenteChecked = mongoController.getUltimaAccionPresente(id);
                 ultimaAccionPresenteChecked.subscribe(ultimaAccionPresente -> {
                     UltimaAccionNew ultimaAccionNew = new UltimaAccionNew();
                     ultimaAccionNew.setDescripcion(ultimaAccion.getDescripcion());
@@ -193,16 +205,14 @@ public class ExecutorConfig implements AsyncConfigurer {
                     ultimaAccionNew.setTipo(ultimaAccion.getTipo());
                     ultimaAccionNew.setExpId(ultimaAccion.getExpId());
                     if (!ultimaAccionPresente) {
-                        System.out.printf("ultimaAccion.getFecha: " + ultimaAccion.getFecha() + ". ultimaAccion.getExpId(): " + ultimaAccion.getExpId() + "%n");
                         Mono<UltimaAccion> putUltimaAccion = mongoController.putUltimaAccionByValue(ultimaAccion);
                         putUltimaAccion.subscribe();
                         Mono<UltimaAccionNew> putUltimaAccionNew = mongoController.putUltimaAccionNewByValue(ultimaAccionNew);
                         putUltimaAccionNew.subscribe();
                     } else {
-                        Mono<UltimaAccion> ultimaAccionCheck = mongoController.getUltimaAccionById(expediente.getExpId());
+                        Mono<UltimaAccion> ultimaAccionCheck = mongoController.getUltimaAccionById(id);
                         ultimaAccionCheck.subscribe(ultimaAccionChecked -> {
                             if (ultimaAccion.getFecha() != ultimaAccionChecked.getFecha()) {
-                                System.out.printf("ultimaAccion.getFecha: " + ultimaAccion.getFecha() + ". ultimaAccionChecked.getFecha(): " + Objects.requireNonNull(ultimaAccionChecked.getFecha()) + "%n");
                                 Mono<UltimaAccion> updateUltimaAccion = mongoController.updateUltimaAccionByValue(ultimaAccion);
                                 updateUltimaAccion.subscribe();
                                 Mono<UltimaAccionNew> putUltimaAccionNew = mongoController.putUltimaAccionNewByValue(ultimaAccionNew);
@@ -214,51 +224,36 @@ public class ExecutorConfig implements AsyncConfigurer {
             } else {
 
             }
-
-        });
     }
 
-    private void impactarFichas() {
-        System.out.println("impactarFichas()");
-        Flux<ExpedientesSolo> expedientes = mongoController.getExpedientesSolo();
-        expedientes.subscribe(expediente -> {
-            Mono<Boolean> fichaCheck = mongoController.getFichaPresente(expediente.getExpId());
+    private void impactarFichas(Integer id) {
+            Mono<Boolean> fichaCheck = mongoController.getFichaPresente(id);
             fichaCheck.subscribe(fichaChecked -> {
                 if (!fichaChecked) {
-                    Ficha ficha = ejeCABAController.traerFicha(expediente.getExpId());
-                    ficha.setExpId(expediente.getExpId());
+                    Ficha ficha = ejeCABAController.traerFicha(id);
+                    ficha.setExpId(id);
                     Mono<Ficha> putFicha = mongoController.putFichaByValue(ficha);
                     putFicha.subscribe();
                 }
             });
-        });
     }
 
-    private void impactarPartes() {
-        System.out.println("impactarPartes()");
+    private void impactarPartes(Integer id) {
         List<Parte> allPartes = new ArrayList<>();
-        Flux<ExpedientesSolo> expedientes = mongoController.getExpedientesSolo();
-        expedientes.subscribe(expediente -> {
-            Root parteRoot = ejeCABAController.traerPartes(expediente.getExpId());
+            Root parteRoot = ejeCABAController.traerPartes(id);
             List<Object> partesObjects = parteRoot.getObjects();
             ObjectMapper om = new ObjectMapper();
             List<Parte> parteInds = om.convertValue(partesObjects, new TypeReference<ArrayList<Parte>>() {
             });
             if(parteInds!=null) {
                 for (Parte parteInd : parteInds) {
-                    parteInd.setExpId(expediente.getExpId());
+                    parteInd.setExpId(id);
                     allPartes.add(parteInd);
                 }
             }
-        });
-        expedientes.subscribe();
-        System.out.println("allPartes: " + allPartes.size());
         List<Parte> listaPartes = new ArrayList<>();
         Flux<Parte> partesMongo = mongoController.getParteAll();
-        partesMongo.subscribe(parte -> {
-            listaPartes.add(parte);
-        });
-        System.out.println("listaPartes: " + listaPartes.size());
+        partesMongo.filter(parte -> parte.getExpId()==id).subscribe(listaPartes::add);
         for(Parte allParte : allPartes) {
             if (!listaPartes.isEmpty()) {
                 boolean found = false;
@@ -280,4 +275,5 @@ public class ExecutorConfig implements AsyncConfigurer {
         }
 
     }
+
 }

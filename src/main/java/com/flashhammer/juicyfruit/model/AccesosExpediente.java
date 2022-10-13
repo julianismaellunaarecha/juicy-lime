@@ -3,6 +3,8 @@ package com.flashhammer.juicyfruit.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccesosExpediente {
+
+
     boolean tieneAccesoPublico;
     boolean tieneAccesoEstricto;
     boolean tieneAccesoPorAutorizacion;

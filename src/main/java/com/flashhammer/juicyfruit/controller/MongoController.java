@@ -1,6 +1,7 @@
 package com.flashhammer.juicyfruit.controller;
 
 import com.flashhammer.juicyfruit.model.Encabezado;
+import com.flashhammer.juicyfruit.model.Expediente;
 import com.flashhammer.juicyfruit.model.ExpedientesSolo;
 import com.flashhammer.juicyfruit.model.ExpedientesSoloNew;
 import com.flashhammer.juicyfruit.model.Ficha;
@@ -30,16 +31,17 @@ public class MongoController {
     private MongoService mongoService;
 
     // Expedientes
-    @GetMapping
+    @GetMapping("expedientessolo")
     public Flux<ExpedientesSolo> getExpedientesSolo() {
         return mongoService.getExpedientesSoloAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("expedientessolo/{id}")
     public Mono<ExpedientesSolo> getExpedientesSoloId(@PathVariable Integer id) {
         return mongoService.getExpedientesSoloById(id);
     }
 
+    @GetMapping("expedientespresente/{id}")
     public Mono<Boolean> getExpedientesPresente(Integer id) {
         return mongoService.getExpedientesPresente(id);
     }
@@ -57,25 +59,28 @@ public class MongoController {
         return mongoService.putExpedientesSoloByValues(expedientesSolos);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("expedientessolo/{id}")
     public Mono<Void> deleteExpedientesSoloById(@PathVariable Integer id) {
         return mongoService.deleteExpedientesSoloById(id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("expedientessolo/{expedientesSolo}")
     public Mono<Void> deleteExpedientesSoloByValue(ExpedientesSolo expedientesSolo) {
         return mongoService.deleteExpedientesSoloByValue(expedientesSolo);
     }
 
     // Encabezados
+    @GetMapping("encabezados")
     public Flux<Encabezado> getEncabezadoAll() {
         return mongoService.getEncabezadoAll();
     }
 
+    @GetMapping("encabezados/{id}")
     public Mono<Encabezado> getEncabezadoById(Integer id) {
         return mongoService.getEncabezadoById(id);
     }
 
+    @GetMapping("encabezadopresente/{id}")
     public Mono<Boolean> getEncabezadoPresente(Integer id) {
         return mongoService.getEncabezadoPresente(id);
     }
@@ -84,16 +89,23 @@ public class MongoController {
         return mongoService.putEncabezadoByValue(encabezado);
     }
 
+    public Mono<Encabezado> updateEncabezadoByValue(Encabezado encabezado) {
+        return mongoService.updateEncabezadoByValue(encabezado);
+    }
+
     // UltimaAccion
 
+    @GetMapping("ultimasacciones")
     public Flux<UltimaAccion> getUltimaAccionAll() {
         return mongoService.getUltimaAccionAll();
     }
 
+    @GetMapping("ultimaaccion/{id}")
     public Mono<UltimaAccion> getUltimaAccionById(Integer id) {
         return mongoService.getUltimaAccionById(id);
     }
 
+    @GetMapping("ultimaaccionepresente/{id}")
     public Mono<Boolean> getUltimaAccionPresente(Integer id) {
         return mongoService.getUltimaAccionPresente(id);
     }
@@ -108,14 +120,17 @@ public class MongoController {
 
     // UltimaAccionNew
 
+    @GetMapping("ultimasaccionesnew")
     public Flux<UltimaAccionNew> getUltimaAccionNewAll() {
         return mongoService.getUltimaAccionNewAll();
     }
 
+    @GetMapping("ultimaaccionnew/{id}")
     public Mono<UltimaAccionNew> getUltimaAccionNewById(Integer id) {
         return mongoService.getUltimaAccionNewById(id);
     }
 
+    @GetMapping("ultimaaccionnewpresente/{id}")
     public Mono<Boolean> getUltimaAccionNewPresente(Integer id) {
         return mongoService.getUltimaAccionNewPresente(id);
     }
@@ -131,14 +146,17 @@ public class MongoController {
 
     // Ficha
 
+    @GetMapping("fichas")
     public Flux<Ficha> getFichaAll() {
         return mongoService.getFichaAll();
     }
 
+    @GetMapping("ficha/{id}")
     public Mono<Ficha> getFichaById(Integer id) {
         return mongoService.getFichaById(id);
     }
 
+    @GetMapping("fichapresente/{id}")
     public Mono<Boolean> getFichaPresente(Integer id) {
         return mongoService.getFichaPresente(id);
     }
@@ -154,14 +172,17 @@ public class MongoController {
 
     // Parte
 
+    @GetMapping("partes")
     public Flux<Parte> getParteAll() {
         return mongoService.getParteAll();
     }
 
+    @GetMapping("parte/{id}")
     public Mono<Parte> getParteById(Integer id) {
         return mongoService.getParteById(id);
     }
 
+    @GetMapping("partepresente/{id}")
     public Mono<Boolean> getPartePresente(Integer id) {
         return mongoService.getPartePresente(id);
     }
@@ -173,4 +194,30 @@ public class MongoController {
     public Mono<Parte> updateParteByValue(Parte parte) {
         return mongoService.updateParteByValue(parte);
     }
+
+    // Expediente completo
+
+    @GetMapping("expedientescompletos")
+    public Flux<Expediente> getExpedienteCompletoAll() {
+        return mongoService.getExpedienteCompletoAll();
+    }
+
+    @GetMapping("expedientecompleto/{id}")
+    public Mono<Expediente> getExpedienteCompletoById(Integer id) {
+        return mongoService.getExpedienteCompletoById(id);
+    }
+
+    @GetMapping("expedientecompletopresente/{id}")
+    public Mono<Boolean> getExpedienteCompletoPresente(Integer id) {
+        return mongoService.getExpedienteCompletoPresente(id);
+    }
+
+    public Mono<Expediente> putExpedienteCompletoByValue(Expediente expediente) {
+        return mongoService.putExpedienteCompletoByValue(expediente);
+    }
+
+    public Mono<Expediente> updateExpedienteCompletoByValue(Expediente expediente) {
+        return mongoService.updateExpedienteCompletoByValue(expediente);
+    }
+
 }
