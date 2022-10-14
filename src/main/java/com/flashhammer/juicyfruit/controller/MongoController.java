@@ -1,40 +1,73 @@
 package com.flashhammer.juicyfruit.controller;
 
-import com.flashhammer.juicyfruit.model.Queue;
+import com.flashhammer.juicyfruit.model.Message;
 import com.flashhammer.juicyfruit.service.MongoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Controller
 @RestController
-@RequestMapping("mongocontroller")
+@RequestMapping(path ="/mongocontroller")
 public class MongoController {
 
     @Autowired
-    MongoService mongoService;
+    private MongoService mongoService;
 
-    @GetMapping
-    public Flux<Queue> getQueue() {
-        return mongoService.getQueueAll();
-    }
-    @GetMapping("/{id}")
-    public Mono<Queue> getQueueId(@PathVariable String id ) {
-        return mongoService.getQueueById(id);
+    @GetMapping(value="/messages",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Flux<Message> getMessages() {
+        return mongoService.getMessages();
     }
 
-    @PostMapping
-    public Mono<Queue> putQueueByValue(Queue queue) {
-        return mongoService.putQueueByValue(queue);
+    @GetMapping(value="/message/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> getMessageById(@PathVariable Integer id) {
+        return mongoService.getMessageById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public Mono<Void> deleteQueueById( @PathVariable String id ) {
-        return mongoService.deleteQueueById(id);
+    @GetMapping(value="/messagepresent/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Boolean> isMessagePresent(@PathVariable Integer id) {
+        return mongoService.isMessagePresent(id);
     }
 
-    @DeleteMapping
-    public Mono<Void> deleteQueueByValue( Queue queue) {
-        return mongoService.deleteQueueByValue(queue);
+    @PutMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> updateMessageByValue(@RequestBody Message message) {
+        return mongoService.updateMessageByValue(message);
     }
+
+    @PostMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> putMessageByValue(@RequestBody Message message) {
+        return mongoService.putMessageByValue(message);
+    }
+
+    @DeleteMapping(value="/message/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(@PathVariable Integer id) {
+        return mongoService.deleteMessageById(id);
+    }
+
+    @DeleteMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageByValue(@RequestBody Message message) {
+        return mongoService.deleteMessageByValue(message);
+    }
+
 }

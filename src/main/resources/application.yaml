@@ -2,6 +2,6 @@ spring:
     data:
         mongodb:
             port: 27017
-            database: lime
+            database: limemessenger
 server:
     port: 3006

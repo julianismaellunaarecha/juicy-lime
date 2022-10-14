@@ -1,8 +1,9 @@
 package com.flashhammer.juicyfruit.service;
 
-import com.flashhammer.juicyfruit.model.Queue;
-import com.flashhammer.juicyfruit.repository.QueueMongoRepository;
+import com.flashhammer.juicyfruit.model.Message;
+import com.flashhammer.juicyfruit.repository.MessagesMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -11,25 +12,33 @@ import reactor.core.publisher.Mono;
 public class MongoService {
 
     @Autowired
-    QueueMongoRepository queueMongoRepository;
+    MessagesMongoRepository messagesSoloMongoRepository;
 
-    public Mono<Queue> getQueueById(String id ) {
-        return queueMongoRepository.findById(id);
+    public Flux<Message> getMessages() {
+        return messagesSoloMongoRepository.findAll();
     }
 
-    public Mono<Queue> putQueueByValue(Queue queue) {
-        return queueMongoRepository.insert(queue);
+    public Mono<Message> getMessageById(Integer id) {
+        return messagesSoloMongoRepository.findById(id);
     }
 
-    public Mono<Void> deleteQueueById( String id ) {
-        return queueMongoRepository.deleteById(id);
+    public Mono<Message> updateMessageByValue(Message message) {
+        return messagesSoloMongoRepository.save(message);
     }
 
-    public Mono<Void> deleteQueueByValue( Queue queue) {
-        return queueMongoRepository.delete(queue);
+    public Mono<Message> putMessageByValue(Message message) {
+        return messagesSoloMongoRepository.insert(message);
     }
 
-    public Flux<Queue> getQueueAll() {
-        return queueMongoRepository.findAll();
+    public Mono<Boolean> isMessagePresent(Integer id) {
+        return messagesSoloMongoRepository.existsById(id);
+    }
+
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(Integer id) {
+        return messagesSoloMongoRepository.deleteById(id).then(Mono.just(ResponseEntity.ok()));
+    }
+
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageByValue(Message message) {
+        return messagesSoloMongoRepository.delete(message).then(Mono.just(ResponseEntity.ok()));
     }
 }
