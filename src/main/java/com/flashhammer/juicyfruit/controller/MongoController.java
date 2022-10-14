@@ -1,53 +1,73 @@
 package com.flashhammer.juicyfruit.controller;
 
-import com.flashhammer.juicyfruit.model.Encabezado;
-import com.flashhammer.juicyfruit.model.Expediente;
-import com.flashhammer.juicyfruit.model.ExpedientesSolo;
-import com.flashhammer.juicyfruit.model.ExpedientesSoloNew;
-import com.flashhammer.juicyfruit.model.Ficha;
 import com.flashhammer.juicyfruit.model.Message;
-import com.flashhammer.juicyfruit.model.Parte;
-import com.flashhammer.juicyfruit.model.UltimaAccion;
-import com.flashhammer.juicyfruit.model.UltimaAccionNew;
 import com.flashhammer.juicyfruit.service.MongoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 @Controller
 @RestController
-@RequestMapping("mongocontroller")
+@RequestMapping(path ="/mongocontroller")
 public class MongoController {
 
     @Autowired
     private MongoService mongoService;
 
-    @GetMapping("messages")
+    @GetMapping(value="/messages",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<Message> getMessages() {
         return mongoService.getMessages();
     }
 
-    @GetMapping("message/{id}")
-    public Mono<Message> getMessageById(Integer id) {
+    @GetMapping(value="/message/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> getMessageById(@PathVariable Integer id) {
         return mongoService.getMessageById(id);
     }
 
-    @GetMapping("message/{id}")
-    public Mono<Boolean> isMessagePresent(Integer id) {
+    @GetMapping(value="/messagepresent/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Boolean> isMessagePresent(@PathVariable Integer id) {
         return mongoService.isMessagePresent(id);
     }
 
-    public Mono<Message> putMessageByValue(Message message) {
+    @PutMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> updateMessageByValue(@RequestBody Message message) {
+        return mongoService.updateMessageByValue(message);
+    }
+
+    @PostMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<Message> putMessageByValue(@RequestBody Message message) {
         return mongoService.putMessageByValue(message);
+    }
+
+    @DeleteMapping(value="/message/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(@PathVariable Integer id) {
+        return mongoService.deleteMessageById(id);
+    }
+
+    @DeleteMapping(value="/message",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageByValue(@RequestBody Message message) {
+        return mongoService.deleteMessageByValue(message);
     }
 
 }
