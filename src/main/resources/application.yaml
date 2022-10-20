@@ -1,7 +1,10 @@
 spring:
-    data:
-        mongodb:
-            port: 27017
-            database: limemessenger
+  data:
+    mongodb:
+      port: 27017
+      database: limemessenger
 server:
-    port: 3006
+  port: 3008
+logging:
+  level:
+    org.springframework.security: DEBUG

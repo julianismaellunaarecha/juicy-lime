@@ -18,7 +18,7 @@ public class MongoService {
         return messagesSoloMongoRepository.findAll();
     }
 
-    public Mono<Message> getMessageById(Integer id) {
+    public Mono<Message> getMessageById(String id) {
         return messagesSoloMongoRepository.findById(id);
     }
 
@@ -30,11 +30,11 @@ public class MongoService {
         return messagesSoloMongoRepository.insert(message);
     }
 
-    public Mono<Boolean> isMessagePresent(Integer id) {
+    public Mono<Boolean> isMessagePresent(String id) {
         return messagesSoloMongoRepository.existsById(id);
     }
 
-    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(Integer id) {
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(String id) {
         return messagesSoloMongoRepository.deleteById(id).then(Mono.just(ResponseEntity.ok()));
     }
 

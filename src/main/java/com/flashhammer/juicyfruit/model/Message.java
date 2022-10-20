@@ -8,7 +8,7 @@ import java.math.BigInteger;
 public class Message {
 
     @Id
-    Integer sourceId;
+    String id;
     String sourceMessageTitle;
     String sourceMessage;
     String sourceLastName;
@@ -18,13 +18,12 @@ public class Message {
     String sourceMatter;
     BigInteger sourceDatetimeMilliseconds;
 
-    @JsonProperty("sourceId")
-    public Integer getSourceId() {
-        return sourceId;
+    public String getId() {
+        return id;
     }
 
-    public void setSourceId(Integer sourceId) {
-        this.sourceId = sourceId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @JsonProperty("sourceMessageTitle")
