@@ -33,13 +33,13 @@ public class MongoController {
 
     @GetMapping(value="/message/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<Message> getMessageById(@PathVariable Integer id) {
+    public Mono<Message> getMessageById(@PathVariable String id) {
         return mongoService.getMessageById(id);
     }
 
     @GetMapping(value="/messagepresent/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<Boolean> isMessagePresent(@PathVariable Integer id) {
+    public Mono<Boolean> isMessagePresent(@PathVariable String id) {
         return mongoService.isMessagePresent(id);
     }
 
@@ -59,7 +59,7 @@ public class MongoController {
 
     @DeleteMapping(value="/message/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(@PathVariable Integer id) {
+    public Mono<ResponseEntity.BodyBuilder> deleteMessageById(@PathVariable String id) {
         return mongoService.deleteMessageById(id);
     }
 
