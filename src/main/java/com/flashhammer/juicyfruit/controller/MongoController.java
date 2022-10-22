@@ -51,7 +51,7 @@ public class MongoController {
         return mongoService.updateMessageByValue(message);
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
+    @CrossOrigin(origins = "https://akshu.ar")
     @PostMapping(value="/message",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
