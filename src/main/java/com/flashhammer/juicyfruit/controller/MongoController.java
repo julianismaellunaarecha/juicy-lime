@@ -53,7 +53,7 @@ public class MongoController {
     @PostMapping(value="/message",
             consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
             produces = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public Mono<Message> putMessageByValue(@RequestBody Message message) {
+    public Mono<Message> putMessageByValue(Message message) {
         return mongoService.putMessageByValue(message);
     }
 
