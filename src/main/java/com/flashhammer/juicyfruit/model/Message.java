@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
 
 public class Message {
 
@@ -16,7 +17,7 @@ public class Message {
     String sourceEmail;
     String sourcePhone;
     String sourceMatter;
-    BigInteger sourceDatetimeMilliseconds;
+    BigInteger sourceDatetimeMilliseconds = BigInteger.valueOf(ZonedDateTime. now(). toInstant(). toEpochMilli());
 
     public String getId() {
         return id;
