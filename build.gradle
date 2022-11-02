@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
     implementation 'org.springframework.boot:spring-boot-starter-data-ldap'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'

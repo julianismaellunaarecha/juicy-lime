@@ -41,4 +41,5 @@ public class MongoService {
     public Mono<ResponseEntity.BodyBuilder> deleteMessageByValue(Message message) {
         return messagesSoloMongoRepository.delete(message).then(Mono.just(ResponseEntity.ok()));
     }
+
 }

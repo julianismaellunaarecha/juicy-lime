@@ -20,31 +20,34 @@ import reactor.core.publisher.Mono;
 
 @Controller
 @RestController
-@RequestMapping(path ="/mongocontroller")
+@RequestMapping(path = "/mongocontroller")
 public class MongoController {
 
     @Autowired
     private MongoService mongoService;
 
-    @GetMapping(value="/messages",
+    @Autowired
+    private MailerController mailerController;
+
+    @GetMapping(value = "/messages",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<Message> getMessages() {
         return mongoService.getMessages();
     }
 
-    @GetMapping(value="/message/{id}",
+    @GetMapping(value = "/message/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Message> getMessageById(@PathVariable String id) {
         return mongoService.getMessageById(id);
     }
 
-    @GetMapping(value="/messagepresent/{id}",
+    @GetMapping(value = "/messagepresent/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Boolean> isMessagePresent(@PathVariable String id) {
         return mongoService.isMessagePresent(id);
     }
 
-    @PutMapping(value="/message",
+    @PutMapping(value = "/message",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Message> updateMessageByValue(@RequestBody Message message) {
@@ -52,20 +55,23 @@ public class MongoController {
     }
 
     @CrossOrigin(origins = "https://akshu.ar")
-    @PostMapping(value="/message",
+    @PostMapping(value = "/message",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<Message> putMessageByValue(@RequestBody Message message) {
-        return mongoService.putMessageByValue(message);
+        Mono<Message> mensajeRecibido = mongoService.putMessageByValue(message);
+        Message mensaje = mensajeRecibido.block();
+        Message mensajeProcesado = mailerController.sendEmail(mensaje);
+        return mongoService.updateMessageByValue(mensajeProcesado);
     }
 
-    @DeleteMapping(value="/message/{id}",
+    @DeleteMapping(value = "/message/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity.BodyBuilder> deleteMessageById(@PathVariable String id) {
         return mongoService.deleteMessageById(id);
     }
 
-    @DeleteMapping(value="/message",
+    @DeleteMapping(value = "/message",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity.BodyBuilder> deleteMessageByValue(@RequestBody Message message) {

@@ -17,7 +17,8 @@ public class Message {
     String sourceEmail;
     String sourcePhone;
     String sourceMatter;
-    BigInteger sourceDatetimeMilliseconds = BigInteger.valueOf(ZonedDateTime. now(). toInstant(). toEpochMilli());
+    BigInteger sourceDatetimeMilliseconds = BigInteger.valueOf(ZonedDateTime.now().toInstant().toEpochMilli());
+    String processed = "no";
 
     public String getId() {
         return id;
@@ -25,6 +26,14 @@ public class Message {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(String processed) {
+        this.processed = processed;
     }
 
     @JsonProperty("sourceMessageTitle")
