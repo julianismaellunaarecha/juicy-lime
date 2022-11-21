@@ -4,6 +4,7 @@
 ## Install a MongoDB 5 local instance
 
 Choose the latest 5 version, currently 5.0.13
+https://www.mongodb.com/try/download/community
 https://www.mongodb.com/download-center/community/releases
 
 ## Build
